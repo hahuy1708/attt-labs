@@ -1,0 +1,24 @@
+Sep 02 17:05:17.808 HYPERVISOR: Release 0.2.17-x86/Windows (tag 2017072410)
+Sep 02 17:05:17.808 HYPERVISOR: Started on IP = localhost, TCP port = 50190.
+Sep 02 17:05:18.309 HYPERVISOR: exec_cmd: hypervisor version 
+Sep 02 17:05:18.311 HYPERVISOR: exec_cmd: hypervisor working_dir C:\Users\DELL\GNS3\projects\lab1\project-files\dynamips 
+Sep 02 17:05:18.311 GENERAL: working_dir=C:\Users\DELL\GNS3\projects\lab1\project-files\dynamips
+Sep 02 17:05:18.311 HYPERVISOR: exec_cmd: hypervisor working_dir C:\Users\DELL\GNS3\projects\lab1\project-files\dynamips\229a3557-84ec-4816-9dbc-e52f8aaff25b 
+Sep 02 17:05:18.311 GENERAL: working_dir=C:\Users\DELL\GNS3\projects\lab1\project-files\dynamips\229a3557-84ec-4816-9dbc-e52f8aaff25b
+Sep 02 17:05:18.311 HYPERVISOR: exec_cmd: vm create R2 2 c3725 
+Sep 02 17:05:18.311 VM: VM R2 created.
+Sep 02 17:05:18.311 HYPERVISOR: exec_cmd: vm set_con_tcp_port R2 5004 
+Sep 02 17:05:18.311 HYPERVISOR: exec_cmd: c3725 get_mac_addr R2 
+Sep 02 17:05:18.311 HYPERVISOR: exec_cmd: vm set_disk0 R2 5 
+Sep 02 17:05:18.311 HYPERVISOR: exec_cmd: vm set_exec_area R2 64 
+Sep 02 17:05:18.325 HYPERVISOR: exec_cmd: vm get_status R2 
+Sep 02 17:05:18.325 HYPERVISOR: exec_cmd: vm set_idle_pc R2 0x60c086a8 
+Sep 02 17:05:18.325 HYPERVISOR: exec_cmd: vm set_ios R2 E:/Cisco - 3725/c3725-adventerprisek9-mz.124-15.T14.image 
+Sep 02 17:05:18.325 HYPERVISOR: exec_cmd: c3725 set_mac_addr R2 c202.0ab8.0000 
+Sep 02 17:05:18.325 HYPERVISOR: exec_cmd: vm set_nvram R2 256 
+Sep 02 17:05:18.325 HYPERVISOR: exec_cmd: vm set_ram R2 256 
+Sep 02 17:05:18.325 HYPERVISOR: exec_cmd: vm get_status R2 
+Sep 02 17:05:18.325 HYPERVISOR: exec_cmd: vm slot_add_binding R2 1 0 NM-4T 
+Sep 02 17:05:18.708 HYPERVISOR: exec_cmd: nio create_udp udp-569ea6f0-db2a-46d6-90c6-45f0b95911b0 10004 127.0.0.1 10005 
+Sep 02 17:05:18.981 HYPERVISOR: exec_cmd: vm slot_add_nio_binding R2 1 0 udp-569ea6f0-db2a-46d6-90c6-45f0b95911b0 
+Sep 02 17:05:18.981 HYPERVISOR: exec_cmd: vm get_status R2 

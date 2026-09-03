@@ -1,0 +1,45 @@
+Aug 27 07:03:35.569 HYPERVISOR: Release 0.2.17-x86/Windows (tag 2017072410)
+Aug 27 07:03:35.569 HYPERVISOR: Started on IP = localhost, TCP port = 65028.
+Aug 27 07:03:35.796 HYPERVISOR: exec_cmd: hypervisor version 
+Aug 27 07:03:35.796 HYPERVISOR: exec_cmd: hypervisor working_dir E:\7学期\ATTT\ATTT_B2\Lab2_PPP\project-files\dynamips 
+Aug 27 07:03:35.807 GENERAL: working_dir=E:\7学期\ATTT\ATTT_B2\Lab2_PPP\project-files\dynamips
+Aug 27 07:03:35.807 HYPERVISOR: exec_cmd: hypervisor working_dir E:\7学期\ATTT\ATTT_B2\Lab2_PPP\project-files\dynamips\3e38e424-d639-4aae-808a-a3efb9cb3674 
+Aug 27 07:03:35.807 GENERAL: working_dir=E:\7学期\ATTT\ATTT_B2\Lab2_PPP\project-files\dynamips\3e38e424-d639-4aae-808a-a3efb9cb3674
+Aug 27 07:03:35.807 HYPERVISOR: exec_cmd: vm create R1 1 c3725 
+Aug 27 07:03:35.807 VM: VM R1 created.
+Aug 27 07:03:35.807 HYPERVISOR: exec_cmd: vm set_con_tcp_port R1 5000 
+Aug 27 07:03:35.807 HYPERVISOR: exec_cmd: c3725 get_mac_addr R1 
+Aug 27 07:03:35.807 HYPERVISOR: exec_cmd: vm set_disk0 R1 1 
+Aug 27 07:03:35.807 HYPERVISOR: exec_cmd: vm set_exec_area R1 64 
+Aug 27 07:03:35.807 HYPERVISOR: exec_cmd: vm get_status R1 
+Aug 27 07:03:35.807 HYPERVISOR: exec_cmd: vm set_idle_pc R1 0x60c09aa0 
+Aug 27 07:03:35.807 HYPERVISOR: exec_cmd: vm set_ios R1 E:/Cisco - 3725/c3725-adventerprisek9-mz.124-15.T14.image 
+Aug 27 07:03:35.807 HYPERVISOR: exec_cmd: c3725 set_mac_addr R1 c201.4318.0000 
+Aug 27 07:03:35.807 HYPERVISOR: exec_cmd: vm set_nvram R1 256 
+Aug 27 07:03:35.807 HYPERVISOR: exec_cmd: vm set_ram R1 256 
+Aug 27 07:03:35.807 HYPERVISOR: exec_cmd: vm get_status R1 
+Aug 27 07:03:35.812 HYPERVISOR: exec_cmd: vm slot_add_binding R1 1 0 NM-4T 
+Aug 27 07:03:37.065 HYPERVISOR: exec_cmd: nio create_udp udp-df1a18ce-755e-4957-a6d1-6e78cccdc7d7 10002 127.0.0.1 10003 
+Aug 27 07:03:37.423 HYPERVISOR: exec_cmd: vm slot_add_nio_binding R1 1 0 udp-df1a18ce-755e-4957-a6d1-6e78cccdc7d7 
+Aug 27 07:03:37.423 HYPERVISOR: exec_cmd: vm get_status R1 
+Aug 27 07:03:38.003 HYPERVISOR: exec_cmd: nio create_udp udp-f12f4bd0-2abe-4767-b21b-c9a9a29d7c60 10014 127.0.0.1 10015 
+Aug 27 07:03:38.003 HYPERVISOR: exec_cmd: vm slot_add_nio_binding R1 1 2 udp-f12f4bd0-2abe-4767-b21b-c9a9a29d7c60 
+Aug 27 07:03:38.003 HYPERVISOR: exec_cmd: vm get_status R1 
+Aug 27 07:03:55.836 HYPERVISOR: exec_cmd: vm set_ghost_status R1 2 
+Aug 27 07:03:55.836 HYPERVISOR: exec_cmd: vm set_ghost_file R1 E:\7学期\ATTT\ATTT_B2\Lab2_PPP\project-files\dynamips\c3725-adventerprisek9-mz.124-15.T14.image-256.ghost 
+Aug 27 07:03:55.836 HYPERVISOR: exec_cmd: vm get_status R1 
+Aug 27 07:03:55.836 HYPERVISOR: exec_cmd: vm set_config R1 configs\i1_startup-config.cfg 
+Aug 27 07:03:55.836 HYPERVISOR: exec_cmd: vm start R1 
+Aug 27 07:04:26.103 HYPERVISOR: exec_cmd: vm extract_config R1 
+Aug 27 07:04:26.116 HYPERVISOR: exec_cmd: vm extract_config R1 
+Aug 27 07:17:31.453 HYPERVISOR: exec_cmd: vm get_status R1 
+Aug 27 07:17:31.453 HYPERVISOR: exec_cmd: vm stop R1 
+Aug 27 07:17:31.600 VM: VM R1 shutdown.
+Aug 27 07:17:31.600 HYPERVISOR: exec_cmd: vm extract_config R1 
+Aug 27 07:17:32.179 HYPERVISOR: exec_cmd: vm get_status R1 
+Aug 27 07:17:32.179 HYPERVISOR: exec_cmd: vm extract_config R1 
+Aug 27 07:17:32.183 HYPERVISOR: exec_cmd: vm delete R1 
+Aug 27 07:17:32.184 VM: VM R1 destroyed.
+Aug 27 07:17:32.185 HYPERVISOR: exec_cmd: hypervisor stop 
+Aug 27 07:17:32.607 HYPERVISOR: Stopped.
+Aug 27 07:17:32.607 GENERAL: reset done.

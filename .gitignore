@@ -1,0 +1,10 @@
+# Cisco IOS images
+*.image
+*.bin
+
+*.mp4
+
+# node QEMU/VirtualBox in GNS3
+*.qcow2
+*.vmdk
+*.vdi

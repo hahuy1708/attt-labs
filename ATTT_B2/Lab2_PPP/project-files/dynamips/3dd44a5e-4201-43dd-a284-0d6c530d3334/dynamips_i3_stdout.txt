@@ -1,0 +1,6 @@
+cygwin warning:
+  MS-DOS style path detected: E:\7\xE5\xAD\xA6\xE6\x9C\x9F\ATTT\ATTT_B2\Lab2_PPP\project-files\dynamips
+  Preferred POSIX equivalent is: /cygdrive/e/7\xE5\xAD\xA6\xE6\x9C\x9F/ATTT/ATTT_B2/Lab2_PPP/project-files/dynamips
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
