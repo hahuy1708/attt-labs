@@ -233,6 +233,78 @@
                     }
                 ],
                 "suspend": false
+            },
+            {
+                "filters": {},
+                "link_id": "3a86c534-913d-4c69-9a8d-1e57a481525a",
+                "link_style": {
+                    "color": "#000000",
+                    "type": 1,
+                    "width": 2
+                },
+                "nodes": [
+                    {
+                        "adapter_number": 0,
+                        "label": {
+                            "rotation": 0,
+                            "style": "font-family: TypeWriter;font-size: 10.0;font-weight: bold;fill: #000000;fill-opacity: 1.0;",
+                            "text": "e0",
+                            "x": 71,
+                            "y": 21
+                        },
+                        "node_id": "11532a69-7a42-44e2-a41c-8daaf49b9132",
+                        "port_number": 0
+                    },
+                    {
+                        "adapter_number": 0,
+                        "label": {
+                            "rotation": 0,
+                            "style": "font-family: TypeWriter;font-size: 10.0;font-weight: bold;fill: #000000;fill-opacity: 1.0;",
+                            "text": "e1",
+                            "x": -3,
+                            "y": 23
+                        },
+                        "node_id": "08d9b874-caf7-4f91-b270-64720e74c664",
+                        "port_number": 1
+                    }
+                ],
+                "suspend": false
+            },
+            {
+                "filters": {},
+                "link_id": "eacda39b-2e5f-48f1-9157-efdb0e95a016",
+                "link_style": {
+                    "color": "#000000",
+                    "type": 1,
+                    "width": 2
+                },
+                "nodes": [
+                    {
+                        "adapter_number": 0,
+                        "label": {
+                            "rotation": 0,
+                            "style": "font-family: TypeWriter;font-size: 10.0;font-weight: bold;fill: #000000;fill-opacity: 1.0;",
+                            "text": "e0",
+                            "x": -4,
+                            "y": 14
+                        },
+                        "node_id": "2bcda4c9-64a7-427d-b0cb-8a5181d78eb7",
+                        "port_number": 0
+                    },
+                    {
+                        "adapter_number": 0,
+                        "label": {
+                            "rotation": 0,
+                            "style": "font-family: TypeWriter;font-size: 10.0;font-weight: bold;fill: #000000;fill-opacity: 1.0;",
+                            "text": "e1",
+                            "x": 72,
+                            "y": 30
+                        },
+                        "node_id": "cd64352f-08c8-4555-be9c-5da472499243",
+                        "port_number": 1
+                    }
+                ],
+                "suspend": false
             }
         ],
         "nodes": [
@@ -289,8 +361,8 @@
                 "symbol": ":/symbols/router.svg",
                 "template_id": "0d327a79-8ee0-4515-bc4a-61e6d320bcf9",
                 "width": 66,
-                "x": -93,
-                "y": -73,
+                "x": -245,
+                "y": 8,
                 "z": 1
             },
             {
@@ -346,8 +418,8 @@
                 "symbol": ":/symbols/router.svg",
                 "template_id": "0d327a79-8ee0-4515-bc4a-61e6d320bcf9",
                 "width": 66,
-                "x": -12,
-                "y": -272,
+                "x": -179,
+                "y": -164,
                 "z": 1
             },
             {
@@ -403,8 +475,8 @@
                 "symbol": ":/symbols/router.svg",
                 "template_id": "0d327a79-8ee0-4515-bc4a-61e6d320bcf9",
                 "width": 66,
-                "x": 88,
-                "y": -70,
+                "x": -74,
+                "y": -7,
                 "z": 1
             },
             {
@@ -483,8 +555,8 @@
                 "symbol": ":/symbols/ethernet_switch.svg",
                 "template_id": "1966b864-93e7-32d5-965f-001384eec461",
                 "width": 72,
-                "x": -237,
-                "y": -68,
+                "x": -426,
+                "y": 12,
                 "z": 1
             },
             {
@@ -563,8 +635,8 @@
                 "symbol": ":/symbols/ethernet_switch.svg",
                 "template_id": "1966b864-93e7-32d5-965f-001384eec461",
                 "width": 72,
-                "x": -81,
-                "y": 100,
+                "x": -245,
+                "y": 198,
                 "z": 1
             },
             {
@@ -643,8 +715,8 @@
                 "symbol": ":/symbols/ethernet_switch.svg",
                 "template_id": "1966b864-93e7-32d5-965f-001384eec461",
                 "width": 72,
-                "x": 228,
-                "y": -64,
+                "x": 103,
+                "y": 3,
                 "z": 1
             },
             {
@@ -723,8 +795,84 @@
                 "symbol": ":/symbols/ethernet_switch.svg",
                 "template_id": "1966b864-93e7-32d5-965f-001384eec461",
                 "width": 72,
-                "x": 96,
-                "y": 117,
+                "x": -57,
+                "y": 192,
+                "z": 1
+            },
+            {
+                "compute_id": "local",
+                "console": null,
+                "console_auto_start": false,
+                "console_type": "none",
+                "custom_adapters": [],
+                "first_port_name": "",
+                "height": 59,
+                "label": {
+                    "rotation": 0,
+                    "style": "font-family: TypeWriter;font-size: 10.0;font-weight: bold;fill: #000000;fill-opacity: 1.0;",
+                    "text": "Server2003R2-1",
+                    "x": -25,
+                    "y": -25
+                },
+                "locked": false,
+                "name": "Server2003R2-1",
+                "node_id": "11532a69-7a42-44e2-a41c-8daaf49b9132",
+                "node_type": "vmware",
+                "port_name_format": "Ethernet{0}",
+                "port_segment_size": 0,
+                "properties": {
+                    "adapter_type": "e1000",
+                    "adapters": 1,
+                    "headless": false,
+                    "linked_clone": true,
+                    "on_close": "power_off",
+                    "usage": "",
+                    "use_any_adapter": true,
+                    "vmx_path": "E:\\7_semester\\ATTT\\ATTT_B3\\lab3\\project-files\\vmware\\11532a69-7a42-44e2-a41c-8daaf49b9132\\Server2003R2-1.vmx"
+                },
+                "symbol": ":/symbols/vmware_guest.svg",
+                "template_id": "7a5e6389-ddff-4a27-96fe-13a4af3477f4",
+                "width": 65,
+                "x": -393,
+                "y": 214,
+                "z": 1
+            },
+            {
+                "compute_id": "local",
+                "console": null,
+                "console_auto_start": false,
+                "console_type": "none",
+                "custom_adapters": [],
+                "first_port_name": "",
+                "height": 59,
+                "label": {
+                    "rotation": 0,
+                    "style": "font-family: TypeWriter;font-size: 10.0;font-weight: bold;fill: #000000;fill-opacity: 1.0;",
+                    "text": "Server2003R2-2",
+                    "x": -25,
+                    "y": -25
+                },
+                "locked": false,
+                "name": "Server2003R2-2",
+                "node_id": "2bcda4c9-64a7-427d-b0cb-8a5181d78eb7",
+                "node_type": "vmware",
+                "port_name_format": "Ethernet{0}",
+                "port_segment_size": 0,
+                "properties": {
+                    "adapter_type": "e1000",
+                    "adapters": 1,
+                    "headless": false,
+                    "linked_clone": true,
+                    "on_close": "power_off",
+                    "usage": "",
+                    "use_any_adapter": true,
+                    "vmx_path": "E:\\7_semester\\ATTT\\ATTT_B3\\lab3\\project-files\\vmware\\2bcda4c9-64a7-427d-b0cb-8a5181d78eb7\\Server2003R2-2.vmx"
+                },
+                "symbol": ":/symbols/vmware_guest.svg",
+                "template_id": "7a5e6389-ddff-4a27-96fe-13a4af3477f4",
+                "width": 65,
+                "x": 328,
+                "y": 76,
                 "z": 1
             }
         ]
