@@ -8,3 +8,27 @@
 *.qcow2
 *.vmdk
 *.vdi
+
+# --- VMware VM files (do not track large binary VM state) ---
+*.vmx
+*.vmxf
+*.vmsd
+*.vmdk
+*.vmem
+*.vmsn
+*.scoreboard
+vmware*.log
+nvram
+
+# --- GNS3 VMware linked-clone data per project (machine-specific, có thể nặng) ---
+**/project-files/vmware/
+
+# --- GNS3 Dynamips runtime/log/cache files (tự sinh khi chạy, không cần track) ---
+**/project-files/dynamips/**/*_lock
+**/project-files/dynamips/**/*_log.txt
+**/project-files/dynamips/**/*rommon_vars
+**/project-files/dynamips/**/ubridge.log
+**/project-files/dynamips/*.ghost
+**/project-files/dynamips/dynamips_i*_log.txt
+**/project-files/dynamips/dynamips_i*_stdout.txt
+**/project-files/dynamips/ilt_*
