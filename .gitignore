@@ -20,6 +20,9 @@
 vmware*.log
 nvram
 
+# --- Installers + files ---
+TACACS/
+
 # --- GNS3 VMware linked-clone data per project (machine-specific, có thể nặng) ---
 **/project-files/vmware/
 

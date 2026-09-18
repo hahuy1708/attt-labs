@@ -5,9 +5,11 @@
 Nhân viên công ty Banana khi muốn truy cập **Internet** phải đi qua cơ chế **AAA (Authentication, Authorization, Accounting)** dựa trên giao thức **TACACS+**, gồm hai thành phần chính:
 
 - **TACACS_Client**: thiết bị Router/Switch — đóng vai trò AAA Client, chặn traffic của Clients và bắt xác thực trước khi cho ra Internet.
-- **TACACS_Server**: máy chủ Windows Server 2003 cài phần mềm **Cisco Secure ACS 4.2** — đóng vai trò AAA Server, thực hiện xác thực (Authentication) và cấp quyền (Authorization).
+- **TACACS_SERVER**: máy chủ Windows Server 2003 cài phần mềm **Cisco Secure ACS 4.2** — đóng vai trò AAA Server, thực hiện xác thực (Authentication) và cấp quyền (Authorization).
 
-Yêu cầu: **Clients không xác thực được qua TACACS_Server thì không được phép ra Internet.**
+Yêu cầu: **Clients không xác thực được qua TACACS_SERVER thì không được phép ra Internet.**
+
+**⚠️Lưu ý**: "hệ thống TACACS+" chỉ gồm 2 thành phần kể trên (TACACS_Client = router/switch, TACACS_SERVER = Server 2003+ACS). Nhưng để test được hệ thống này, đề bài còn ngầm định cần thành phần thứ 3: "Clients" — máy trạm Windows XP đại diện nhân viên, là đối tượng bị xác thực (không phải là thành phần của hệ thống TACACS). "TACACS_Client" (router) và "Clients" (máy nhân viên) là hai thứ khác nhau, dù tên rất dễ nhầm.
 
 ## 2. Sơ đồ mạng & bảng địa chỉ IP
 
@@ -16,20 +18,19 @@ Yêu cầu: **Clients không xác thực được qua TACACS_Server thì không 
 | Clients (LAN nội bộ)  | —         | 192.168.1.0/24  | TACACS_Client (f0/0)                  |
 | TACACS_Client         | f0/0      | 192.168.1.0/24  | Clients                               |
 | TACACS_Client         | f1/0      | 2.2.2.0/24      | Internet (qua vboxnet2)               |
-| TACACS_Client         | f2/1      | 10.0.0.0/24     | TACACS_Server (qua vboxnet1)          |
-| TACACS_Server         | —         | 10.0.0.0/24     | TACACS_Client (f2/1)                  |
+| TACACS_Client         | f2/1      | 10.0.0.0/24     | TACACS_SERVER (qua vboxnet1)          |
+| TACACS_SERVER         | —         | 10.0.0.0/24     | TACACS_Client (f2/1)                  |
 | Internet              | —         | 2.2.2.0/24      | TACACS_Client (f1/0) qua vboxnet2     |
 
-**Máy ảo:** Lab này dùng **VirtualBox host-only networks** (`vboxnet1`, `vboxnet2`) để bridge giữa thiết bị mô phỏng (GNS3/Packet Tracer) và các máy ảo (Server 2003, XP Client) — khác với một số lab trước dùng VMware/VMnet.
 
 ## 3. Vai trò từng thành phần
 
 - **Clients**: máy trạm (Windows XP) trong mạng 192.168.1.0/24, đại diện nhân viên công ty Banana, cần xác thực trước khi ra Internet.
-- **TACACS_Client**: Router/Switch chạy Cisco IOS, cấu hình AAA để gửi yêu cầu xác thực/cấp quyền tới TACACS_Server (giao thức TACACS+, thường qua TCP port 49).
-- **TACACS_Server**: Server 2003 cài **Cisco Secure ACS v4.2.124** — quản lý danh sách user, chính sách xác thực và phân quyền truy cập Internet.
-- **Internet**: mạng ngoài (2.2.2.0/24) mà Clients chỉ được truy cập sau khi AAA xác thực + cấp quyền thành công.
+- **TACACS_Client**: Router/Switch chạy Cisco IOS, cấu hình AAA để gửi yêu cầu xác thực/cấp quyền tới TACACS_SERVER (giao thức TACACS+, thường qua TCP port 49).
+- **TACACS_SERVER**: Server 2003 cài **Cisco Secure ACS v4.2.124** — quản lý danh sách user, chính sách xác thực và phân quyền truy cập Internet.
+- **Internet**: mạng ngoài (2.2.2.0/24) mà Clients chỉ được truy cập sau khi AAA xác thực + cấp quyền thành công. Chỉ mang tính tượng trưng — chỉ cần gán IP tĩnh cho interface f1/0, không bắt buộc phải bridge ra Internet thật hay có thiết bị nào đứng sau (tương tự cách Gateway ở Lab 3 xử lý cổng ra Internet).
 
-## 4. Cài đặt phần mềm trên TACACS_Server (thứ tự bắt buộc)
+## 4. Cài đặt phần mềm trên TACACS_SERVER (thứ tự bắt buộc)
 
 Tài nguyên nằm trong thư mục **Tài liệu học tập → TACACS**:
 
