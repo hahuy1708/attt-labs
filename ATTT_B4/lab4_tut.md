@@ -4,6 +4,7 @@
 
 - [1. Import máy ảo Client](#1-cài-đặt-virtualbox-và-import-máy-ảo-client)
 - [2. Dựng topology trong GNS3](#2-dựng-topology-trong-gns3)
+- [3. Cài đặt phần mềm trên Server](#3-cài-đặt-phần-mềm-trên-server)
 
 ## 1. Import máy ảo Client
 
@@ -52,7 +53,7 @@ interface FastEthernet0/1
  no shutdown
 exit
 
-interface Loopback0
+interface FastEthernet2/0
  ip address 2.2.2.1 255.255.255.0
 exit
 end
@@ -78,9 +79,47 @@ Thực hiện các kiểm tra sau trước khi cấu hình AAA:
 
 Nếu ping thành công theo cả hai chiều, topology đã sẵn sàng để cài ACS trên server và cấu hình AAA trên router.
 
-## 3. Công việc tiếp theo
+## 3. Cài đặt phần mềm trên Server
 
-- Cài JRE, ACS và Firefox trên VM Server. Có thể kéo thả trực tiếp vì đây là VM VMware.
+### 3.1. Chuẩn bị và đưa file vào VM
+- Đảm bảo Server 2003 đã cài **VMware Tools** (bắt buộc để kéo-thả hoạt động)
+- Trong VM, tạo thư mục riêng: `C:\TACACS_Installers`
+- Trên máy thật, chọn cả 3 file cùng lúc (giữ Ctrl + click): `jre-6u13-windows-i586-p-s.exe`, `ACSv4.2.124 FULL-K9.zip`, `Firefox Setup 2.0.exe` → kéo thả cả 3 vào thư mục vừa tạo trong VM
+- Giải nén file ACS ngay trong VM: chuột phải vào file `.zip` → **Extract All...**
+
+### 3.2. Cài Java Runtime
+- Chạy `jre-6u13-windows-i586-p-s.exe`, Next/Install theo mặc định tới khi Finish
+
+### 3.3. Cài Cisco Secure ACS
+Chạy `setup.exe` trong thư mục vừa giải nén, làm theo từng bước:
+
+1. **Important Notice** (cảnh báo antivirus có thể khoá file database) → **Next** (không cần làm gì thêm)
+2. **Before You Begin** (4 checkbox điều kiện) → tick cả 4 ô (chỉ là xác nhận, không kiểm tra thật) → **Next**
+3. **Internet Authentication Service Detected** → chọn **"Disable IAS (recommended)"** → **Next**
+4. **Authentication Database Configuration** → giữ **"Check the ACS Internal Database only"** (mặc định) → **Next**
+5. **Advanced Options** → không tick gì cả, giữ mặc định → **Next**
+6. **Active Service Monitoring** → giữ **Enable Log-in Monitoring** (script Restart All), **không** tick Enable Mail Notifications → **Next**
+7. **New Password / Confirm New Password** → đây là mật khẩu mã hoá database nội bộ ACS (không phải mật khẩu đăng nhập web) — đặt một mật khẩu đơn giản (VD: `Cisco123!`), gõ giống nhau cả 2 ô, ghi nhớ lại
+8. Tiếp tục Next cho tới khi cài xong → **Finish**
+
+### 3.4. Cài Firefox 2.0
+- Chạy `Firefox Setup 2.0.exe`
+- **Setup Type**: chọn **Standard**
+- **Import**: chọn **"Don't import anything"** (máy sạch, không có gì để import)
+- **Set as default browser**: tuỳ chọn, chọn gì cũng không ảnh hưởng lab
+- **Finish**
+
+### 3.5. Xác nhận ACS đã cài đặt thành công
+- Mở Firefox, truy cập: `https://127.0.0.1:2002` (dùng `127.0.0.1` thay vì `localhost` để tránh lỗi DNS)
+- Nếu cảnh báo chứng chỉ SSL không tin cậy → chấp nhận bỏ qua (bình thường vì cert tự ký)
+- Vào được trang chủ **Cisco Secure ACS v4.2** với menu bên trái (User Setup, Group Setup, Network Configuration, System Configuration...) → **cài đặt thành công**
+
+⚠️ Nếu không load được trang: vào **Start > Administrative Tools > Services**, kiểm tra các dịch vụ tên bắt đầu bằng **CS** (đặc biệt `CSAdmin`) đã **Started** chưa — nếu chưa, Start thủ công hoặc **Restart VM** một lần sau khi cài xong.
+
+**VM Client (XP): không cần cài/tải gì thêm** — IE có sẵn đủ để test truy cập Internet sau khi xác thực.
+
+# Đề xuất các bước tiếp theo:
+
 - Cấu hình `aaa new-model`, `tacacs-server host 10.0.0.100 key <shared-secret>`, cùng các lệnh `aaa authentication` và `aaa authorization` trên `TACACS_Client`.
 - Khai báo `TACACS_Client` là AAA Client trong giao diện quản trị ACS.
 - Tạo một user kiểm thử trên ACS.
