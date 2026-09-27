@@ -43,6 +43,15 @@
                 "x": -15,
                 "y": -196,
                 "z": 2
+            },
+            {
+                "drawing_id": "7e5d36ab-a9a0-4660-8692-ac5341315a6a",
+                "locked": false,
+                "rotation": 0,
+                "svg": "<svg width=\"11\" height=\"24\"><text font-family=\"TypeWriter\" font-size=\"10.0\" font-weight=\"bold\" fill=\"#000000\" fill-opacity=\"1.0\"> </text></svg>",
+                "x": 105,
+                "y": -106,
+                "z": 2
             }
         ],
         "links": [
@@ -120,7 +129,7 @@
             },
             {
                 "filters": {},
-                "link_id": "b56bb313-0be4-46c2-b2da-3a1800234fee",
+                "link_id": "3cc3978a-ab3e-410f-ae35-9d3501599ccf",
                 "link_style": {
                     "color": "#000000",
                     "type": 1,
@@ -144,12 +153,12 @@
                         "label": {
                             "rotation": 0,
                             "style": "font-family: TypeWriter;font-size: 10.0;font-weight: bold;fill: #000000;fill-opacity: 1.0;",
-                            "text": "VPN - VPN Client",
-                            "x": 39,
-                            "y": 91
+                            "text": "VMnet4",
+                            "x": 54,
+                            "y": 76
                         },
                         "node_id": "2bee793b-eb70-42f2-847d-8bae3c072bf8",
-                        "port_number": 0
+                        "port_number": 1
                     }
                 ],
                 "suspend": false
@@ -280,6 +289,11 @@
                             "name": "VMware Network Adapter VMnet3",
                             "special": true,
                             "type": "ethernet"
+                        },
+                        {
+                            "name": "VMware Network Adapter VMnet4",
+                            "special": true,
+                            "type": "ethernet"
                         }
                     ],
                     "ports_mapping": [
@@ -375,6 +389,11 @@
                             "name": "VMware Network Adapter VMnet3",
                             "special": true,
                             "type": "ethernet"
+                        },
+                        {
+                            "name": "VMware Network Adapter VMnet4",
+                            "special": true,
+                            "type": "ethernet"
                         }
                     ],
                     "ports_mapping": [
@@ -399,8 +418,8 @@
                 "symbol": ":/symbols/classic/server.svg",
                 "template_id": "39e257dc-8412-3174-b6b3-0ee3ed6a43e9",
                 "width": 49,
-                "x": -204,
-                "y": -13,
+                "x": -203,
+                "y": -14,
                 "z": 1
             },
             {
@@ -470,6 +489,11 @@
                             "name": "VMware Network Adapter VMnet3",
                             "special": true,
                             "type": "ethernet"
+                        },
+                        {
+                            "name": "VMware Network Adapter VMnet4",
+                            "special": true,
+                            "type": "ethernet"
                         }
                     ],
                     "ports_mapping": [
@@ -477,6 +501,12 @@
                             "interface": "VPN - VPN Client",
                             "name": "VPN - VPN Client",
                             "port_number": 0,
+                            "type": "ethernet"
+                        },
+                        {
+                            "interface": "VMware Network Adapter VMnet4",
+                            "name": "VMware Network Adapter VMnet4",
+                            "port_number": 1,
                             "type": "ethernet"
                         }
                     ],
