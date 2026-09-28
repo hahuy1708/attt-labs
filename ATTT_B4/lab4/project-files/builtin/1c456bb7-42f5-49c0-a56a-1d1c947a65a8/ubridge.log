@@ -1,6 +1,0 @@
-uBridge version 0.9.16 running with Npcap version 1.78, based on libpcap version 1.10.4
-Hypervisor TCP control server started (IP localhost port 63808).
-UDP tunnel connecting from local port 10004 to IPv4 addresss 127.0.0.1 on port 10005
-Ethernet interface \Device\NPF_{A77FD171-35DC-4006-9CFC-C470816A94EA}
-Source NIO listener thread for 1c456bb7-42f5-49c0-a56a-1d1c947a65a8-1 has started
-Destination NIO listener thread for 1c456bb7-42f5-49c0-a56a-1d1c947a65a8-1 has started
