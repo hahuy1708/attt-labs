@@ -251,11 +251,6 @@
                             "type": "ethernet"
                         },
                         {
-                            "name": "Bluetooth Network Connection",
-                            "special": true,
-                            "type": "ethernet"
-                        },
-                        {
                             "name": "Radmin VPN",
                             "special": true,
                             "type": "ethernet"
@@ -351,11 +346,6 @@
                             "type": "ethernet"
                         },
                         {
-                            "name": "Bluetooth Network Connection",
-                            "special": true,
-                            "type": "ethernet"
-                        },
-                        {
                             "name": "Radmin VPN",
                             "special": true,
                             "type": "ethernet"
@@ -447,11 +437,6 @@
                     "interfaces": [
                         {
                             "name": "Wi-Fi",
-                            "special": true,
-                            "type": "ethernet"
-                        },
-                        {
-                            "name": "Bluetooth Network Connection",
                             "special": true,
                             "type": "ethernet"
                         },
