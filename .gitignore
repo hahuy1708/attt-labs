@@ -9,6 +9,9 @@
 *.vmdk
 *.vdi
 
+# WireShark capture files
+*.pcapng
+
 # --- VMware VM files (do not track large binary VM state) ---
 *.vmx
 *.vmxf

@@ -318,16 +318,25 @@ WEST# show crypto ipsec sa
 ```
 Các bộ đếm **giữ nguyên** so với Bước 3 → xác nhận lưu lượng không thuộc VPN đi rõ, không qua đường hầm.
 
+### Reset VPN: nếu filter isakmp trên Wireshark hoặc muốn kiểm tra lại từ đầu, xóa SA cũ:
+
+```
+WEST# clear crypto isakmp
+WEST# clear crypto sa
+EAST# clear crypto isakmp
+EAST# clear crypto sa
+```
+
 ---
 
-## 7. (Optional) Bằng chứng Wireshark — thấy ESP, không thấy ICMP
+## 7. Wireshark & Tunnel Mode
 
-Lưu file `.pcapng` để nộp kèm.
+### 7.1 Wireshark Capture
 
-1. Right-click link **West S0/0 ⇄ Gateway S0/0** trên canvas GNS3 → **Start capture**.
+1. Right-click link **West S0/0 ⇄ Gateway S0/0** trên canvas GNS3 → **Start capture** → Cisco HDLC
 2. Chạy lần lượt:
    - `ping 10.10.3.100` từ PC-LAN1 (lưu lượng VPN).
-   - `ping 10.10.4.100` từ PC-LAN1 (lưu lượng thường).
+   - `ping 10.10.4.100` từ PC-LAN1 (lưu lượng không phải VPN).
 3. Dừng capture và lọc:
 
 | Filter | Kỳ vọng |
@@ -336,9 +345,69 @@ Lưu file `.pcapng` để nộp kèm.
 | `esp` | Gói ESP giữa `172.16.3.1` ⇄ `172.16.4.1`, có SPI và Sequence number, **phần dữ liệu không đọc được** |
 | `icmp` | Chỉ thấy ICMP của ping **LAN1 → LAN4** (`10.10.1.100` ⇄ `10.10.4.100`). **Không** thấy ICMP giữa `10.10.1.100` và `10.10.3.100` |
 
-4. Đặt tên file, ví dụ `lab7_ipsec_west_gateway.pcapng`, rồi đóng hẳn Wireshark.
-
 > Vì sao không thấy ICMP LAN1↔LAN3: gói gốc đã bị mã hóa và bọc trong gói ESP có IP ngoài `172.16.3.1 → 172.16.4.1`. GATEWAY (và Wireshark trên link này) chỉ nhìn thấy IP ngoài.
+
+### 7.2 Tunnel Mode
+
+1. Kiểm tra tunnel mode trên router:
+
+```
+show crypto ipsec sa
+show crypto ipsec transform-set
+show crypto isakmp sa
+```
+Tập trung vào các dòng:
+- in use settings ={Tunnel, }: xác nhận SA đang sử dụng Tunnel Mode.
+- #pkts encrypt và #pkts decrypt: bộ đếm mã hóa/giải mã.
+- #pkts digest và #pkts verify: bộ đếm tính toán/xác minh giá trị xác thực ESP.
+- QM_IDLE: trạng thái IKE thường thấy khi thương lượng đã hoàn tất trên IOS của lab này.
+
+Nếu muốn xem nhanh các bộ đếm:
+```
+show crypto ipsec sa | include pkts
+```
+
+2. Bật kiểm tra IPv4 header checksum để Wireshark kiểm tra checksum IPv4 thay vì báo Unverified:
+
+- Trong Wireshark: Edit → Preferences → Protocols → IPv4.
+- Tick Validate the IPv4 checksum if possible.
+- OK, rồi mở lại gói. Dòng sẽ đổi thành header checksum status: Good.
+
+Lưu ý: đây chỉ là kiểm tra lỗi truyền. Đừng trình bày nó như bằng chứng xác thực.
+
+3. Để IP ngoài được xác thực: thêm AH
+
+- AH (giao thức 51) xác thực toàn bộ IP header ngoài, trừ các trường thay đổi được như TTL. Trên WEST và EAST, sửa transform set:
+
+```
+enable
+configure terminal
+no crypto ipsec transform-set VPN-SET
+crypto ipsec transform-set VPN-SET ah-sha-hmac esp-3des esp-sha-hmac
+ mode tunnel
+ exit
+end
+write memory
+```
+
+- Làm tương tự trên EAST. ACL 110, crypto map và peer giữ nguyên. Gateway không cần đổi.
+
+- Sau đó:
+
+```
+clear crypto sa
+```
+
+- Ping LAN3 từ PC-LAN1, trên WEST kiểm tra 
+
+```
+show crypto ipsec sa | include in use 
+show crypto ipsec sa | include pkts.
+```
+
+- Trong Wireshark, filter ah || esp: sẽ có gói protocol 51 (AH) với Authentication Data, đi trước phần ESP. Khi đó IP ngoài cũng được xác thực.
+
+
 
 ---
 
