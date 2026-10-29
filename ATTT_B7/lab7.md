@@ -375,39 +375,191 @@ show crypto ipsec sa | include pkts
 
 Lưu ý: đây chỉ là kiểm tra lỗi truyền. Đừng trình bày nó như bằng chứng xác thực.
 
-3. Để IP ngoài được xác thực: thêm AH
+### 7.3. Manual keying với session-key
 
-- AH (giao thức 51) xác thực toàn bộ IP header ngoài, trừ các trường thay đổi được như TTL. Trên WEST và EAST, sửa transform set:
+Phần trên dùng IKE để tự thương lượng khóa. Phần này dùng **manual keying**: khóa và SPI được gõ tay trong crypto map bằng `ipsec-manual` và `set session-key`. Không có IKE, không có Phase 1 hay Phase 2, nên gói đầu tiên không bị mất vì phải chờ thương lượng.
 
-```
-enable
-configure terminal
-no crypto ipsec transform-set VPN-SET
-crypto ipsec transform-set VPN-SET ah-sha-hmac esp-3des esp-sha-hmac
- mode tunnel
+Lý do dùng manual keying trong lab: khóa nằm trong cấu hình, nên Wireshark có thể giải mã ESP. Với IKE, khóa được tạo động và không xem được trên router, nên không thể nạp vào Wireshark.
+
+#### 7.3.1. Ý nghĩa các tham số
+
+| Tham số | Ý nghĩa |
+|---|---|
+| `ipsec-manual` | Crypto map không dùng IKE, SA được cấu hình tay |
+| `set session-key outbound esp <SPI> cipher <khóa mã hóa> authenticator <khóa xác thực>` | SA cho chiều gửi đi của router này |
+| `set session-key inbound esp <SPI> cipher ... authenticator ...` | SA cho chiều nhận về, cùng khóa nhưng SPI đảo ngược |
+| SPI | Số nhận diện SA, router dùng để chọn đúng SA khi nhận gói ESP. SPI outbound của WEST phải bằng SPI inbound của EAST |
+| Khóa cipher 3DES | 24 byte = 48 ký tự hex |
+| Khóa authenticator HMAC-SHA1 | 20 byte = 40 ký tự hex |
+
+Quy tắc đối xứng: SPI outbound của bên này phải bằng SPI inbound của bên kia. Ở lab này SPI 1000 đi WEST → EAST, SPI 2000 đi EAST → WEST.
+
+| Chiều | SPI | Khóa cipher | Khóa authenticator |
+|---|---|---|---|
+| WEST → EAST | 1000 (0x3e8) | `0102030405060708090a0b0c0d0e0f101112131415161718` | `112233445566778899aabbccddeeff0011223344` |
+| EAST → WEST | 2000 (0x7d0) | (giống trên) | (giống trên) |
+#### 7.3.2. Chuyển WEST và EAST sang manual keying
+
+**WEST:**
+````
+crypto map VPN-MAP 10 ipsec-manual
+ match address 110
+ set peer 172.16.4.1
+ set transform-set VPN-SET
+ set session-key outbound esp 1000 cipher 0102030405060708090a0b0c0d0e0f101112131415161718 authenticator 112233445566778899aabbccddeeff0011223344
+ set session-key inbound esp 2000 cipher 0102030405060708090a0b0c0d0e0f101112131415161718 authenticator 112233445566778899aabbccddeeff0011223344
+ exit
+!
+interface Serial0/0
+ crypto map VPN-MAP
  exit
 end
-write memory
-```
-
-- Làm tương tự trên EAST. ACL 110, crypto map và peer giữ nguyên. Gateway không cần đổi.
-
-- Sau đó:
-
-```
 clear crypto sa
-```
+write memory
+````
 
-- Ping LAN3 từ PC-LAN1, trên WEST kiểm tra 
+**EAST:**
+````
+crypto map VPN-MAP 10 ipsec-manual
+ match address 110
+ set peer 172.16.3.1
+ set transform-set VPN-SET
+ set session-key outbound esp 2000 cipher 0102030405060708090a0b0c0d0e0f101112131415161718 authenticator 112233445566778899aabbccddeeff0011223344
+ set session-key inbound esp 1000 cipher 0102030405060708090a0b0c0d0e0f101112131415161718 authenticator 112233445566778899aabbccddeeff0011223344
+ exit
+!
+interface Serial0/1
+ crypto map VPN-MAP
+ exit
+end
+clear crypto sa
+write memory
+````
 
-```
-show crypto ipsec sa | include in use 
-show crypto ipsec sa | include pkts.
-```
+Lưu ý:
+- Lệnh `clear crypto sa` phải chạy sau khi gắn lại crypto map, để bộ đếm về 0 và SA mới được nạp.
+- Crypto map trên WEST và EAST phải dùng cùng transform set `VPN-SET` (`esp-3des esp-sha-hmac`) và cùng ACL 110 đối xứng như đã cấu hình ở trên.
+- Với manual keying, SA không tự thương lượng lại nên `clear crypto sa` chỉ đặt lại bộ đếm, không đổi khóa hay SPI.
 
-- Trong Wireshark, filter ah || esp: sẽ có gói protocol 51 (AH) với Authentication Data, đi trước phần ESP. Khi đó IP ngoài cũng được xác thực.
+#### 7.3.3. Kiểm tra cấu hình manual
 
+````
+show crypto map
+show crypto ipsec sa
+````
 
+Trong `show crypto map` phải thấy `ipsec-manual` và `Interfaces using crypto map VPN-MAP: Serial0/0` (hoặc `Serial0/1` trên EAST).
+
+Trong `show crypto ipsec sa` phải thấy:
+````
+inbound esp sas:
+  spi: 0x7D0(2000)
+outbound esp sas:
+  spi: 0x3E8(1000)
+````
+Trên EAST thì đảo lại: inbound 0x3E8, outbound 0x7D0.
+
+Ping thử từ PC-LAN1:
+````
+PC-LAN1> ping 10.10.3.100
+````
+Gói đầu tiên đã phải có reply, vì không cần thương lượng. Nếu timeout, kiểm tra ACL 110 và `show crypto ipsec sa` xem bộ đếm có tăng không.
+
+---
+
+#### 7.3.4. Kiểm tra trong gói tin
+
+Đây là cách đúng để chứng minh tunnel mode trong Wireshark. Chỉ nhìn cột Protocol hoặc cột Source/Destination là không đủ, vì sau khi giải mã Wireshark hiển thị giao thức và địa chỉ của gói bên trong.
+
+Gói ESP tunnel mode có cấu trúc:
+
+````
+[ IP ngoài 172.16.3.1 -> 172.16.4.1 | Protocol = ESP (50) ]
+   [ ESP header: SPI, Sequence ]
+   [ IP gốc 10.10.1.100 -> 10.10.3.100 | ICMP | dữ liệu ]   <- đã mã hóa
+   [ ESP trailer: Pad, Pad Length, Next Header ]
+   [ ESP ICV ]
+````
+
+Dấu hiệu tunnel mode ở mục ESP Decrypted Data:
+- `Next header: IPIP (0x04)`: gói bên trong là một IP packet hoàn chỉnh. Transport mode sẽ là `ICMP (1)`.
+- Có hai mục `Internet Protocol Version 4`: IP ngoài (172.16.x.x, Protocol = ESP) và IP trong (10.10.x.x, Protocol = ICMP).
+
+---
+
+### 7.4. Giải mã ESP trong Wireshark
+
+Mục đích: đưa SPI và khóa vào Wireshark để nó giải mã được gói ESP và hiển thị IP gốc bên trong.
+
+### 7.4.1. Bật bắt gói
+
+1. Right-click link **WEST S0/0 ⇄ Gateway S0/0** → **Start capture** → encapsulation **Cisco HDLC**.
+2. Trên WEST: `clear crypto sa`.
+3. Trên PC-LAN1: `ping 10.10.3.100 -c 5` (hoặc `ping 10.10.3.100` trong VPCS).
+4. Dừng capture.
+
+### 7.4.2. Bật tùy chọn giải mã ESP
+
+1. Trong Wireshark: **Edit → Preferences → Protocols → ESP**.
+2. Tick:
+   - **Attempt to detect/decode encrypted ESP payloads**
+   - **Attempt to check ESP Authentication**
+3. Bấm **ESP SAs (Edit...)**, xóa các dòng cũ nếu có.
+
+### 7.4.3. Thêm hai ESP SA (một dòng mỗi chiều)
+
+Bấm dấu **+** và nhập:
+
+**Dòng 1: WEST → EAST**
+
+| Trường | Giá trị |
+|---|---|
+| Protocol | IPv4 |
+| Src IP | 172.16.3.1 |
+| Dest IP | 172.16.4.1 |
+| SPI | 1000 (hoặc 0x3e8) |
+| Encryption | TripleDES-CBC [RFC2451] |
+| Encryption Key | 0x0102030405060708090a0b0c0d0e0f101112131415161718 |
+| Authentication | HMAC-SHA-1-96 [RFC2404] |
+| Authentication Key | 0x112233445566778899aabbccddeeff0011223344 |
+
+**Dòng 2: EAST → WEST**
+
+| Trường | Giá trị |
+|---|---|
+| Protocol | IPv4 |
+| Src IP | 172.16.4.1 |
+| Dest IP | 172.16.3.1 |
+| SPI | 2000 (hoặc 0x7d0) |
+| Encryption | TripleDES-CBC [RFC2451] |
+| Encryption Key | 0x0102030405060708090a0b0c0d0e0f101112131415161718 |
+| Authentication | HMAC-SHA-1-96 [RFC2404] |
+| Authentication Key | 0x112233445566778899aabbccddeeff0011223344 |
+
+Lưu ý:
+- Src IP và Dest IP là **IP ngoài** (172.16.x.x), không phải IP LAN (10.10.x.x).
+- Khóa phải có tiền tố `0x`, không có khoảng trắng.
+- Bấm **OK → Apply → OK**.
+
+### 7.4.4. Mở lại gói đã bắt
+
+Wireshark không giải mã lại các gói đã có sẵn trong file sau khi thay đổi preference. Với file đã lưu, bấm **View → Reload** (Ctrl+R). Với capture đang chạy, bắt thêm gói mới.
+
+### 7.4.5. Kết quả đúng
+
+Chọn một gói có SPI `0x000003e8` và kiểm tra:
+
+| Mục | Kết quả đúng |
+|---|---|
+| ESP SPI | `0x000003e8 (1000)` |
+| ESP ICV | `[correct]`, `[Good: True]` |
+| ESP Decrypted Data | Có, khoảng 88 byte |
+| ESP Contained Data | Có |
+| Next header | `IPIP (0x04)` |
+| IP bên trong | `10.10.1.100 → 10.10.3.100` |
+| ICMP bên trong | Echo request (hoặc reply) |
+
+Cột Protocol hiện `ICMP` sau khi giải mã là bình thường. Muốn xác nhận gói vẫn là ESP trên đường truyền, nhìn vào IP header ngoài: `Protocol: Encap Security Payload (50)`.
 
 ---
 
@@ -506,3 +658,17 @@ A: Các bộ đếm `#pkts encaps/encrypt` (gói đã mã hóa gửi đi) và `#
 
 **Q: Nếu hai router không khớp chính sách Phase 1 thì sao?**
 A: IKE không dựng được SA; `show crypto isakmp sa` không có `QM_IDLE` (thường `MM_NO_STATE`), `debug crypto isakmp` báo `atts are not acceptable` / `SA not acceptable`. Slide VPN xếp lỗi này vào nhóm "Main Mode thất bại — policy Phase 1 không khớp".
+
+**Q: Manual keying và IKE khác nhau thế nào?**
+A: Manual keying gõ khóa và SPI trực tiếp trong cấu hình, không có Phase 1 và Phase 2. Ưu điểm: dễ debug, Wireshark giải mã được. Nhược điểm: khóa cố định, không đổi tự động, không an toàn trong môi trường thật. IKE tự tạo và đổi khóa nên an toàn hơn, nhưng khóa không xem được trên router.
+
+**Q: Vì sao cần đảo SPI giữa hai router?**
+A: Mỗi IPsec SA là một chiều. Router gửi dùng SPI outbound, router nhận tra SPI inbound để chọn SA. Nếu SPI không khớp đối xứng, gói bị loại vì không tìm thấy SA.
+
+**Q: Vì sao cần `clear crypto sa` sau khi đổi cấu hình?**
+A: Với manual keying, SA cũ vẫn tồn tại trong bộ nhớ cho đến khi bị xóa. `clear crypto sa` đặt lại bộ đếm và làm cho SA mới có hiệu lực ngay.
+
+**Q: Vì sao có ESP, không có ICMP trong capture trên link ngoài?**
+A: Gói ICMP gốc nằm trong phần ESP đã mã hóa. Chỉ khi giải mã trong Wireshark mới thấy ICMP bên trong.
+
+
